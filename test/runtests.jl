@@ -1,4 +1,4 @@
-using NORTA, Test
+using NonParametricNORTA, Test
 
-include("NORTA.jl")
+include("NonParametricNORTA.jl")
 include("transform_data.jl")

@@ -1,4 +1,4 @@
-module NORTA
+module NonParametricNORTA
 
 const ROBUST_ROUND = 1e-5
 
