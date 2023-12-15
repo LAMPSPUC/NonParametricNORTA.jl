@@ -2,7 +2,7 @@
 
 | **Build Status** | **Coverage** |
 |:-----------------:|:-----------------:|
-| [![ci](https://github.com/LAMPSPUC/NORTA/actions/workflows/ci.yml/badge.svg)](https://github.com/LAMPSPUC/NORTA/actions/workflows/ci.yml) | [![codecov](https://codecov.io/gh/LAMPSPUC/NORTA/graph/badge.svg?token=VDpuXvPSI2)](https://codecov.io/gh/LAMPSPUC/NORTA) |
+| [![ci](https://github.com/LAMPSPUC/NORTA/actions/workflows/ci.yml/badge.svg)](https://github.com/LAMPSPUC/NORTA/actions/workflows/ci.yml) | [![codecov](https://codecov.io/gh/LAMPSPUC/NORTA/graph/badge.svg?token=LKBAQWSW18)](https://codecov.io/gh/LAMPSPUC/NORTA) |
 
 
 NORTA.jl is a Julia package designed to implement the concept of Normal to Anything (NORTA) introduced by Marne C. Cario and Barry L. Nelson in their work on "Modeling and Generating Random Vectors with Arbitrary Marginal Distributions and Correlation Matrix." NORTA.jl harnesses the power of Julia's framework to offer a novel approach. While staying true to the essence of the original concept, this package diverges by employing non-parametric distribution fitting methods (from KernelDensity.jl package) within the Julia environment. Consequently, it eliminates the necessity for explicit computation of proposed correlation matrices, enhancing the efficiency and flexibility of the process. 
@@ -12,6 +12,7 @@ NORTA.jl is a Julia package designed to implement the concept of Normal to Anyth
 ```julia
 using NORTA
 using Plots
+using Distributions
 
 y = rand(1000, 3)*rand(3).*15 #generate y as a regression
 y_norta, non_parametric_distribution = NORTA.convertData(y) 
