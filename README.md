@@ -1,21 +1,20 @@
-# NORTA
+# NonParametricNORTA
 
 | **Build Status** | **Coverage** |
 |:-----------------:|:-----------------:|
-| [![ci](https://github.com/LAMPSPUC/NORTA/actions/workflows/ci.yml/badge.svg)](https://github.com/LAMPSPUC/NORTA/actions/workflows/ci.yml) | [![codecov](https://codecov.io/gh/LAMPSPUC/NORTA/graph/badge.svg?token=LKBAQWSW18)](https://codecov.io/gh/LAMPSPUC/NORTA) |
+| [![ci](https://github.com/LAMPSPUC/NonParametricNORTA/actions/workflows/ci.yml/badge.svg)](https://github.com/LAMPSPUC/NonParametricNORTA/actions/workflows/ci.yml) | [![codecov](https://codecov.io/gh/LAMPSPUC/NonParametricNORTA/graph/badge.svg?token=LKBAQWSW18)](https://codecov.io/gh/LAMPSPUC/NonParametricNORTA) |
 
-
-NORTA.jl is a Julia package designed to implement the concept of Normal to Anything (NORTA) introduced by Marne C. Cario and Barry L. Nelson in their work on "Modeling and Generating Random Vectors with Arbitrary Marginal Distributions and Correlation Matrix." NORTA.jl harnesses the power of Julia's framework to offer a novel approach. While staying true to the essence of the original concept, this package diverges by employing non-parametric distribution fitting methods (from KernelDensity.jl package) within the Julia environment. Consequently, it eliminates the necessity for explicit computation of proposed correlation matrices, enhancing the efficiency and flexibility of the process. 
+NonParametricNORTA.jl is a Julia package designed to implement the concept of Normal to Anything (NORTA) introduced by Marne C. Cario and Barry L. Nelson in their work on "Modeling and Generating Random Vectors with Arbitrary Marginal Distributions and Correlation Matrix." NonParametricNORTA.jl harnesses the power of Julia's framework to offer a novel approach. While staying true to the essence of the original concept, this package diverges by employing non-parametric distribution fitting methods (from KernelDensity.jl package) within the Julia environment. Consequently, it eliminates the necessity for explicit computation of proposed correlation matrices, enhancing the efficiency and flexibility of the process. 
 
 ## Data transformation
 
 ```julia
-using NORTA
+using NonParametricNORTA
 using Plots
 using Distributions
 
 y = rand(1000, 3)*rand(3).*15 #generate y as a regression
-y_norta, non_parametric_distribution = NORTA.convertData(y) 
+y_norta, non_parametric_distribution = NonParametricNORTA.convertData(y) 
 ```
 
 ### Transformation visualization
@@ -27,7 +26,7 @@ This transformation involves obtaining the non-parametric distribution's cumulat
 ## Data reverse transformation
 
 ```julia
-sc = NORTA.reverseData(rand(Normal(0, 1), 100), non_parametric_distribution)
+sc = NonParametricNORTA.reverseData(rand(Normal(0, 1), 100), non_parametric_distribution)
 ```
 ### Reverse transformation visualization
 
@@ -53,7 +52,7 @@ y = X*(rand(10).*10) + rand(T)
 y_train = y[train_idx]
 y_test = y[test_idx]
 
-y_train_norta, np = NORTA.convertData(y_train)
+y_train_norta, np = NonParametricNORTA.convertData(y_train)
 
 β = X_train\y_train_norta #Model the NORTA transformed data
 residuals = y_train_norta - X_train*β
@@ -77,7 +76,7 @@ The modeled simulation, when visualized in the transformed scale, does not adher
 
 #### Original scale data results
 ```julia
-scenarios = NORTA.reverseData(NORTA_scenarios, np)
+scenarios = NonParametricNORTA.reverseData(NORTA_scenarios, np)
 
 plot(y_train, w=2, color = "black", lab = "Original Historic", legend=:outerbottom)
 for i in 1:N_scenarios
