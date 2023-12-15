@@ -21,7 +21,7 @@ y_norta, non_parametric_distribution = NORTA.convertData(y)
 
 This transformation involves obtaining the non-parametric distribution's cumulative distribution function (CDF) from the original observations and mapping the equivalent values onto a Normal (0, 1) CDF. Subsequently, these CDF values are adjusted to fit the Normal (0, 1) scale. This transformation process is visually represented in the figure below.
 
-![transformation](./docs/figures/transformation.png)
+![transformation](./docs/figures/transformation.PNG)
 
 ## Data reverse transformation
 
@@ -70,7 +70,7 @@ for i in 1:N_scenarios
 end
 plot!([], color="red", lab = "NORTA transformed scenarios")
 ```
-![norta_simulation](./docs/figures/norta_sim.png)
+![norta_simulation](./docs/figures/norta_sim.PNG)
 
 The modeled simulation, when visualized in the transformed scale, does not adhere to historical bounds. This is evident as the maximum and minimum of the simulation exceed historical boundaries.
 
@@ -84,6 +84,6 @@ for i in 1:N_scenarios
 end
 plot!([], color="red", lab = "Scenarios")
 ```
-![simulation](./docs/figures/simulation.png)
+![simulation](./docs/figures/simulation.PNG)
 
 However, upon reverse transforming the scenarios, we observe that the simulation respects the historical boundaries. This demonstrates the utility of the reverse transformation process in maintaining data integrity within the historical context.
