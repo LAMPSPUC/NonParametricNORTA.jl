@@ -38,7 +38,7 @@ In time series simulation processes within stationary contexts, maintaining scen
 
 ### Simulation of Water Inflows
 
-In this example we want to generate scenario paths for a water inflow time series. We will make two simulations using an Auto ARIMA (estimated vi StateSpaceModels.jl package). The first one will be the simple output of the model and the second one will be utilizing the NORTA transformation.
+In this study, we aim to generate scenario paths for a time series representing water inflow. We will conduct two simulations employing the Auto ARIMA model, as estimated through the StateSpaceModels.jl package. The first simulation will produce the straightforward output of the model, while the second will incorporate the NORTA transformation to enhance the scenario generation process.
 
 ```julia
 using StateSpaceModels, CSV, DataFrames, Plots
@@ -65,7 +65,7 @@ plot!(forecast_dates, expected_value, lab = "Expected Value", color = :red)
 ```
 ![simulation](./docs/figures/inflow_simulation.png)
 
-The modeled simulation does not adhere to historical bounds. This is evident as, in this case, the minimum of the simulation is below historical boundaries.
+The modeled simulation fails to adhere to historical constraints, as demonstrated by the fact that the minimum value of the simulation falls below the established historical bounds.
 
 #### Simulating utilizing NORTA
 ```julia
@@ -87,4 +87,4 @@ plot!(forecast_dates, expected_value, lab = "Expected Value", color = :red)
 ```
 ![norta_simulation](./docs/figures/inflow_norta_simulation.png)
 
-We can see that using the NORTA transformation the simulation respects the historical boundaries.
+As we can see, the use of the NORTA transformation effectively ensures that the simulation remains within historical boundaries.
