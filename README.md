@@ -14,7 +14,7 @@ using Plots
 using Distributions
 
 y = rand(1000, 3)*rand(3).*15 #generate y as a regression
-y_norta, non_parametric_distribution = NonParametricNORTA.convertData(y) 
+y_norta, non_parametric_distribution = NonParametricNORTA.convert_data(y) 
 ```
 
 ### Transformation visualization
@@ -26,7 +26,7 @@ This transformation involves obtaining the non-parametric distribution's cumulat
 ## Data reverse transformation
 
 ```julia
-sc = NonParametricNORTA.reverseData(rand(Normal(0, 1), 100), non_parametric_distribution)
+sc = NonParametricNORTA.reverse_data(rand(Normal(0, 1), 100), non_parametric_distribution)
 ```
 ### Reverse transformation visualization
 
@@ -36,54 +36,55 @@ Similar to the initial transformation but in reverse, this process involves reve
 
 In time series simulation processes within stationary contexts, maintaining scenarios that respect historical value bounds becomes crucial. Ensuring scenarios do not violate the maximum and minimum values can be achieved by modeling the transformed NORTA series and then performing the reverse transformation process.
 
-### Regression + residual bootstraping example
+### Simulation of Water Inflows
+
+In this example we want to generate scenario paths for a water inflow time series. We will make two simulations using an Auto ARIMA (estimated vi StateSpaceModels.jl package). The first one will be the simple output of the model and the second one will be utilizing the NORTA transformation.
 
 ```julia
-T           = 1000
-train_idx   = 1:900
-test_idx    = 901:1000
-N_scenarios = 100
+using StateSpaceModels, CSV, DataFrames, Plots
+df = CSV.read("datasets/inflows.csv")
 
-X = rand(T, 10)
-X_train = X[train_idx, :]
-X_test  = X[test_idx, :]
+y = df[!, 2]
+dates = df[!, 1]
+forecast_dates = collect(Date(2015, 1, 1): Month(1): Date(2016, 12, 1))
+steps_ahead = 24
 
-y = X*(rand(10).*10) + rand(T)
-y_train = y[train_idx]
-y_test = y[test_idx]
-
-y_train_norta, np = NonParametricNORTA.convertData(y_train)
-
-β = X_train\y_train_norta #Model the NORTA transformed data
-residuals = y_train_norta - X_train*β
-
-NORTA_scenarios = zeros(length(y_test), N_scenarios)
-for i in 1:N_scenarios
-    NORTA_scenarios[:, i] = X[T_train+1:T, :]*β + rand(residuals, length(y_test))
-end
 ```
-#### Transformed data results
+#### Simulating Original Time Series
 ```julia
-plot(y_train_norta, w=2, color = "black", lab = "NORTA transformed historic", legend=:outerbottom)
-for i in 1:N_scenarios
-    plot!(vcat(ones(T_train).*NaN, NORTA_scenarios[:, i]), color = "red", alpha = 0.2, lab = "")
-end
-plot!([], color="red", lab = "NORTA transformed scenarios")
+model = auto_arima(y; seasonal = 12)
+fit!(model)
+scenarios = simulate_scenarios(model, 24, 100)[:, 1, :]
+expected_value = [i[1] for i in forecast(model, 24).expected_value]
+
+plt = plot(dates, y, label = "Historical Values", color = :black, w=2, legend=:outertop)
+plot!(plt, forecast_dates, scenarios, label = "", color = "grey", width = 0.2)
+plot!(forecast_dates, expected_value.*NaN, color = "grey", label="Scenarios")
+plot!(forecast_dates, expected_value, lab = "Expected Value", color = :red)
+
 ```
-![norta_simulation](./docs/figures/norta_sim.PNG)
+![simulation](./docs/figures/inflow_simulation.PNG)
 
-The modeled simulation, when visualized in the transformed scale, does not adhere to historical bounds. This is evident as the maximum and minimum of the simulation exceed historical boundaries.
+The modeled simulation does not adhere to historical bounds. This is evident as, in this case, the minimum of the simulation is below historical boundaries.
 
-#### Original scale data results
+#### Simulating utilizing NORTA
 ```julia
-scenarios = NonParametricNORTA.reverseData(NORTA_scenarios, np)
+transformed_y, non_parametric_distribution = NonParametricNORTA.convert_data(y)
 
-plot(y_train, w=2, color = "black", lab = "Original Historic", legend=:outerbottom)
-for i in 1:N_scenarios
-    plot!(vcat(ones(T_train).*NaN, scenarios[:, i]), color = "red", alpha = 0.2, lab = "")
-end
-plot!([], color="red", lab = "Scenarios")
+model = auto_arima(transformed_y; seasonal = 12)
+fit!(model)
+scenarios = simulate_scenarios(model, 24, 100)[:, 1, :]
+expected_value = [i[1] for i in forecast(model, 24).expected_value]
+
+scenarios = NonParametricNORTA.reverse_data(scenarios, non_parametric_distribution)
+expected_value = NonParametricNORTA.reverse_data(expected_value, non_parametric_distribution)
+
+plt = plot(dates, y, label = "Historical Values", color = :black, w=2, legend=:outertop)
+plot!(plt, forecast_dates, scenarios, label = "", color = "grey", width = 0.2)
+plot!(forecast_dates, expected_value.*NaN, color = "grey", label="Scenarios")
+plot!(forecast_dates, expected_value, lab = "Expected Value", color = :red)
+
 ```
-![simulation](./docs/figures/simulation.PNG)
+![norta_simulation](./docs/figures/inflow_norta_simulation.PNG)
 
-However, upon reverse transforming the scenarios, we observe that the simulation respects the historical boundaries. This demonstrates the utility of the reverse transformation process in maintaining data integrity within the historical context.
+We can see that using the NORTA transformation the simulation respects the historical boundaries.

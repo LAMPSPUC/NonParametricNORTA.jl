@@ -69,7 +69,7 @@ end
     - `non_parametric_distribution::DiscreteNonParametric`: Non parametric distribution of the observations.
 
     # Returns
-    - `LinearInterpolation(cdf_range, quantile_range) `: interpolation function of the normal cumulative distribution of the scenarios.
+    - `linear_interpolation(cdf_range, quantile_range) `: interpolation function of the normal cumulative distribution of the scenarios.
 
 """
 function get_interpolation_function(normal_cumulative_value::Union{Vector{Fl}, Matrix{Fl}}, non_parametric_distribution::DiscreteNonParametric) where Fl
@@ -78,7 +78,9 @@ function get_interpolation_function(normal_cumulative_value::Union{Vector{Fl}, M
  
     quantile_range = [quantile(non_parametric_distribution, t) for t in cdf_range]
 
-    return LinearInterpolation(cdf_range, quantile_range) 
+    Interpolations.deduplicate_knots!(cdf_range)
+    Interpolations.deduplicate_knots!(quantile_range)
+    return linear_interpolation(cdf_range, quantile_range) 
 end
 
 """
