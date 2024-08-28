@@ -29,14 +29,14 @@ end
 
 @testset "Function: get_interpolation_function" begin
     normal_cumulative_value = NonParametricNORTA.get_normal_cdf([-1.281, -0.841, -0.524, -0.253, 0.0, 0.253, 0.524, 0.841, 1.281, 5.612])
-    observations = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    observations = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10.0]
     non_parametric_distribution = NonParametricNORTA.get_discretenonparametric_distribution(observations)
     expected = NonParametricNORTA.get_interpolation_function(normal_cumulative_value, non_parametric_distribution)
     @test isa(expected, NonParametricNORTA.Interpolations.Extrapolation)
 end
 
 @testset "Function: reverse_data" begin
-    observations = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    observations = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10.0]
     non_parametric_distribution = NonParametricNORTA.get_discretenonparametric_distribution(observations)
     transformed_obs = NonParametricNORTA.get_transformed_observations(non_parametric_distribution, observations)
     normal_cumulative_value = round.(NonParametricNORTA.get_normal_cdf(transformed_obs), digits = 8)
@@ -44,7 +44,7 @@ end
     expected = NonParametricNORTA.reverse_data(interpolation, normal_cumulative_value, non_parametric_distribution)
     @test trunc.(expected, digits = 3) == observations
 
-    observations = [1, 1, 1, 1, 1, 3, 2, 2, 2, 2]
+    observations = [1, 1, 1, 1, 1, 3, 2, 2, 2, 2.0]
     non_parametric_distribution = NonParametricNORTA.get_discretenonparametric_distribution(observations)
     transformed_obs = NonParametricNORTA.get_transformed_observations(non_parametric_distribution, observations)
     normal_cumulative_value = round.(NonParametricNORTA.get_normal_cdf(transformed_obs), digits = 8)
