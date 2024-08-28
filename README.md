@@ -63,7 +63,7 @@ plot!(forecast_dates, expected_value.*NaN, color = "grey", label="Scenarios")
 plot!(forecast_dates, expected_value, lab = "Expected Value", color = :red)
 
 ```
-![simulation](./docs/figures/inflow_simulation.PNG)
+![simulation](./docs/figures/inflow_simulation.png)
 
 The modeled simulation does not adhere to historical bounds. This is evident as, in this case, the minimum of the simulation is below historical boundaries.
 
@@ -85,6 +85,6 @@ plot!(forecast_dates, expected_value.*NaN, color = "grey", label="Scenarios")
 plot!(forecast_dates, expected_value, lab = "Expected Value", color = :red)
 
 ```
-![norta_simulation](./docs/figures/inflow_norta_simulation.PNG)
+![norta_simulation](./docs/figures/inflow_norta_simulation.png)
 
 We can see that using the NORTA transformation the simulation respects the historical boundaries.
